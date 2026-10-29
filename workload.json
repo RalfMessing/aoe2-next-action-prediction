@@ -1,0 +1,25 @@
+{
+  "team_name": "Vieso",
+  "students": [
+    {
+      "first_name": "Ralf",
+      "last_name": "Messing",
+      "workload": 0.25
+    },
+    {
+      "first_name": "Fabian",
+      "last_name": "Kloibhofer",
+      "workload": 0.25
+    },
+    {
+      "first_name": "Abdulrahman",
+      "last_name": "Alsabagh",
+      "workload": 0.25
+    },
+    {
+      "first_name": "Muhammad Shahab",
+      "last_name": "Uddin",
+      "workload": 0.25
+    }
+  ]
+}

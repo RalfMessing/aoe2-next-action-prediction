@@ -1,0 +1,33 @@
+{
+  "team_name": "Vieso",
+  "students": [
+    {
+      "student_id": "k12312109",
+      "first_name": "Ralf",
+      "last_name": "Messing",
+      "email": "k12312109@students.jku.at",
+      "github_user": "RalfMessing"
+    },
+    {
+      "student_id": "k12306719",
+      "first_name": "Fabian",
+      "last_name": "Kloibhofer",
+      "email": "k12306719@students.jku.at",
+      "github_user": "fklwfp"
+    },
+    {
+      "student_id": "k12407903",
+      "first_name": "Abdulrahman",
+      "last_name": "Alsabagh",
+      "email": "k12407903@students.jku.at",
+      "github_user":"aa-lab"
+    },
+    {
+      "student_id": "k12353348",
+      "first_name": "Muhammad Shahab",
+      "last_name": "Uddin",
+      "email": "k12353348@students.jku.at",
+      "github_user": "UDDIN41424"
+    }
+  ]
+}
