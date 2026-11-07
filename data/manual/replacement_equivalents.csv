@@ -1,0 +1,3 @@
+logged_action,logged_name,base_type,base_name,replacement_type,replacement_name,civs,evidence
+BUILD,Mill,BUILDING,Mill,BUILDING,Folwark,Poles,"Confirmed 2026-11-07: the log never uses the name Folwark, and both sessions that train the Poles-only Obuch log 'Mill' builds (7 and 5) although Poles have no Mill in the 2023 tree."
+BUILD,Monastery,BUILDING,Monastery,BUILDING,Fortified Church,Armenians;Georgians,"Confirmed 2026-11-07: the log never uses the name Fortified Church, and both sessions that train the Armenian Warrior Priest (Fortified Church unit) log 'Monastery' builds (7 and 1) although Armenians have no Monastery in the 2023 tree."

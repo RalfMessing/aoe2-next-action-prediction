@@ -1,0 +1,2 @@
+civ,object_type,tree_id,required_age,evidence
+Cumans,BUILDING,621,2,"2023 civ help text (aoe2techtree_2023/data.json civ_helptexts, strings_en.json): 'Additional Town Center can be built in the Feudal Age'. The 2023 tree lists age 3; the 2026 tree lists age 2 for Cumans only."

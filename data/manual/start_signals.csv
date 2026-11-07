@@ -1,0 +1,6 @@
+signal_type,value,civs,evidence
+villagers,6,Chinese,"2023 civ help text: 'Start with +3 villagers, -50 wood, -200 food' (standard start: 3 villagers)."
+villagers,4,Mayans,"2023 civ help text: 'Start with +1 villager, but -50 food' (standard start: 3 villagers)."
+object,Llama,Incas,"2023 civ help text: 'Start with a free Llama'. Llamas are also a map herdable (both players have one in 59 matches), hence the opponent rule."
+object,Eagle Scout,Aztecs;Incas;Mayans,"In the 2023 tree only these civs have the Eagle Scout, and they have no Stable and no Scout Cavalry. Log: 119 sessions start with one, both players in only 3 matches."
+object,Camel Scout,Gurjaras,"In the 2023 tree only Gurjaras have the Camel Scout. Log: 30 sessions start with one, never both players of a match. Decided 2026-11-07."

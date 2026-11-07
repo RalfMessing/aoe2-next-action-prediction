@@ -1,0 +1,9 @@
+civ,food,wood,gold,stone,evidence
+Chinese,-200,-50,0,0,"2023 civ help text: 'Start with +3 villagers, -50 wood, -200 food'."
+Mayans,-50,0,0,0,"2023 civ help text: 'Start with +1 villager, but -50 food'."
+Aztecs,0,0,50,0,"2023 civ help text: 'Start with +50 gold'."
+Persians,50,50,0,0,"2023 civ help text: 'Start with +50 wood, food'."
+Sicilians,0,0,0,100,"2023 civ help text: 'Start with +100 stone'."
+Huns,0,-100,0,0,"2023 civ help text: 'Do not need houses, but start with -100 wood'."
+Georgians,-50,0,0,0,"2023 civ help text: 'Start with a Mule Cart, but -50 food'."
+Lithuanians,100,0,0,0,"2023 civ help text: 'Each Town Center provides 100 food' (applied once, for the starting Town Center)."
