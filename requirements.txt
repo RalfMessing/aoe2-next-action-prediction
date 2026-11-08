@@ -1,1 +1,4 @@
 pyarrow>=17
+numpy>=1.26
+pandas>=2.2
+torch>=2.5

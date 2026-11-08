@@ -230,3 +230,7 @@ data/processed/*
 *.sqlite
 *.db
 *.parquet
+
+# Model runs (checkpoints, metrics); shared outside git
+models/
+*.pt

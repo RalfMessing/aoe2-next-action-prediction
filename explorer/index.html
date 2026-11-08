@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AoE2 Build-Order Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:wght@600&display=swap">
+<style>
+/* Layout: header + prefix trail, a 3-column comparison (players | transformer | trigram), then the prefix tree (icicle) */
+:root{
+  --bg:#f3f4f2; --surface:#ffffff; --fg:#1d2321; --muted:#5f6a66; --line:#d9ddd9; --soft:#eceeeb;
+  --players:#2f3a36; --model:#0f7a73; --trigram:#b5651d;
+  --err-lo:#e9eeea; --err-hi:#b23a2e; --good:#0f7a73; --bad:#b5651d; --mid:#e9eeea;
+  --unit:#3b6fb6; --building:#7a5c2e; --tech:#7d3c98;
+  --display:"IBM Plex Serif",Georgia,serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151917; --surface:#1d2220; --fg:#e4e8e5; --muted:#9aa5a0; --line:#323936; --soft:#252b28;
+  --players:#d6ddd9; --model:#3fbfb2; --trigram:#e39a52;
+  --err-lo:#25302b; --err-hi:#e0604f; --good:#3fbfb2; --bad:#e39a52; --mid:#2a322e;
+  --unit:#7aa6e6; --building:#c9a46a; --tech:#c18ad8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151917; --surface:#1d2220; --fg:#e4e8e5; --muted:#9aa5a0; --line:#323936; --soft:#252b28;
+  --players:#d6ddd9; --model:#3fbfb2; --trigram:#e39a52;
+  --err-lo:#25302b; --err-hi:#e0604f; --good:#3fbfb2; --bad:#e39a52; --mid:#2a322e;
+  --unit:#7aa6e6; --building:#c9a46a; --tech:#c18ad8; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between}
+h1{font:600 26px/1.15 var(--display);margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;max-width:70ch}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{font:500 13px var(--body);border:0;background:none;color:var(--muted);padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.seg button:focus-visible,.row:focus-visible,.crumb:focus-visible,select:focus-visible{outline:2px solid var(--model);outline-offset:2px}
+.note{font-size:12.5px;color:var(--bad);min-height:1em}
+.trail{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.crumb{font:500 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:14px;padding:3px 10px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.crumb[aria-current="true"]{border-color:var(--fg);font-weight:600}
+.crumb .k{font:11px var(--mono);color:var(--muted)}
+.sep{color:var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 28px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.stat{display:flex;flex-direction:column}
+.stat b{font:600 20px var(--mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stat.m b{color:var(--model)} .stat.t b{color:var(--trigram)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+.col{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 12px 8px;min-width:0}
+.col h2{font:600 13px var(--mono);letter-spacing:.05em;text-transform:uppercase;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+.col h2 i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.col p{margin:0 0 8px;font-size:12.5px;color:var(--muted)}
+.row{display:grid;grid-template-columns:10px minmax(0,1fr) 52px;gap:4px 8px;align-items:center;padding:5px 6px;border-radius:5px;width:100%;border:0;background:none;color:inherit;font:inherit;text-align:left}
+button.row{cursor:pointer}
+button.row:hover{background:var(--soft)}
+.row.hl{background:color-mix(in srgb,var(--model) 14%,transparent)}
+.row .dot{width:8px;height:8px;border-radius:50%}
+.row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .name small{color:var(--muted);font:11px var(--mono);margin-left:4px}
+.row .val{font:12.5px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.row .bar{grid-column:2/4;height:5px;background:var(--soft);border-radius:3px;overflow:hidden}
+.row .bar i{display:block;height:100%}
+.row.top .name{font-weight:600}
+.row .go{color:var(--muted);font:12px var(--mono)}
+.row.dim{opacity:.55}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.treebox{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.treehead{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;justify-content:space-between}
+.treehead h2{font:600 13px var(--mono);letter-spacing:.05em;text-transform:uppercase;margin:0}
+select{font:13px var(--body);padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.scale{display:flex;align-items:center;gap:8px;font:12px var(--mono);color:var(--muted)}
+.scale i{display:inline-block;width:120px;height:8px;border-radius:4px}
+.scroll{overflow-x:auto}
+svg text{font:11px var(--body);fill:var(--fg);pointer-events:none}
+svg rect.n{stroke:var(--surface);stroke-width:1;cursor:pointer}
+svg rect.n.on{stroke:var(--fg);stroke-width:2}
+footer{font-size:12.5px;color:var(--muted);max-width:90ch}
+footer code{font:12px var(--mono)}
+.empty{color:var(--muted);font-size:13px;padding:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>AoE2 Build-Order Explorer</h1>
+      <p class="sub">Pick an opening step by step. For each prefix of distinct actions you see what players really did next, the transformer's mean top predictions and what the trigram reference suggests.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+      <div class="seg" role="group" aria-label="Sessions">
+        <button id="v-held" type="button" aria-pressed="true">Held-out (val + test)</button>
+        <button id="v-all" type="button" aria-pressed="false">All sessions</button>
+      </div>
+      <div class="note" id="viewnote"></div>
+    </div>
+  </header>
+
+  <nav class="trail" id="trail" aria-label="Current prefix"></nav>
+  <section class="stats" id="stats" aria-label="Statistics for this prefix"></section>
+
+  <section class="cols">
+    <div class="col"><h2><i style="background:var(--players)"></i>Players did</h2><p>Share of sessions with this next action. Click to extend the prefix.</p><div id="c-actual"></div></div>
+    <div class="col"><h2><i style="background:var(--model)"></i>Transformer</h2><p>Mean predicted probability over these sessions.</p><div id="c-model"></div></div>
+    <div class="col"><h2><i style="background:var(--trigram)"></i>Trigram</h2><p id="tri-level">Prediction from the last two actions only.</p><div id="c-tri"></div></div>
+  </section>
+  <div class="legend"><span><i style="background:var(--unit)"></i>Unit</span><span><i style="background:var(--building)"></i>Building</span><span><i style="background:var(--tech)"></i>Technology</span><span>Hover an action to find it in all three columns.</span></div>
+
+  <section class="treebox">
+    <div class="treehead">
+      <h2>Prefix tree</h2>
+      <label class="scale">Colour <select id="metric">
+        <option value="model_err">Transformer error rate</option>
+        <option value="tri_err">Trigram error rate</option>
+        <option value="gap">Transformer − trigram accuracy</option>
+      </select></label>
+      <div class="scale" id="scale"></div>
+    </div>
+    <div class="scroll"><svg id="tree" role="img" aria-label="Prefix tree of build orders"></svg></div>
+    <div class="empty">Column = position in the build order, height = number of sessions. White space below a node = sessions whose next step is shared by fewer than <span id="minsess"></span> sessions.</div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  const DATA = window.EXPLORER_DATA;
+  const vocab = new Map(DATA.vocab.map(v => [v.id, v]));
+  const TYPE_COLOR = { UNIT: "var(--unit)", BUILDING: "var(--building)", TECHNOLOGY: "var(--tech)" };
+  const state = { view: "held_out", node: 0, metric: "model_err", hover: null };
+  let index = buildIndex(DATA.trees[state.view].nodes);
+
+  function buildIndex(nodes) {
+    const byId = new Map(nodes.map(n => [n.id, n]));
+    const children = new Map(nodes.map(n => [n.id, []]));
+    const childByToken = new Map();
+    for (const n of nodes) {
+      if (n.parent === null) continue;
+      children.get(n.parent).push(n);
+      childByToken.set(n.parent + ":" + n.token, n);
+    }
+    for (const list of children.values()) list.sort((a, b) => b.n - a.n);
+    return { byId, children, childByToken };
+  }
+
+  const name = id => (vocab.get(id) || { name: "?" }).name;
+  const color = id => TYPE_COLOR[(vocab.get(id) || {}).type] || "var(--muted)";
+  const pct = x => (100 * x).toFixed(x < 0.1 ? 1 : 0) + "%";
+  const el = (tag, attrs = {}, ...kids) => {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") node.className = v; else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
+      else node.setAttribute(k, v);
+    }
+    for (const kid of kids) node.append(kid);
+    return node;
+  };
+
+  function pathTo(id) {
+    const path = [];
+    for (let n = index.byId.get(id); n; n = n.parent === null ? null : index.byId.get(n.parent)) path.unshift(n);
+    return path;
+  }
+
+  function go(id) { state.node = id; render(); }
+
+  function setView(view) {
+    const tokens = pathTo(state.node).slice(1).map(n => n.token);
+    state.view = view;
+    index = buildIndex(DATA.trees[view].nodes);
+    let id = 0;
+    for (const t of tokens) { const child = index.childByToken.get(id + ":" + t); if (!child) break; id = child.id; }
+    state.node = id;
+    document.getElementById("v-held").setAttribute("aria-pressed", view === "held_out");
+    document.getElementById("v-all").setAttribute("aria-pressed", view === "all");
+    render();
+  }
+
+  function renderTrail(path) {
+    const trail = document.getElementById("trail");
+    trail.replaceChildren();
+    path.forEach((n, i) => {
+      if (i) trail.append(el("span", { class: "sep", "aria-hidden": "true" }, "›"));
+      const label = i === 0 ? "Start" : name(n.token);
+      trail.append(el("button", { class: "crumb", type: "button", "aria-current": String(n.id === state.node),
+        onclick: () => go(n.id) }, label, el("span", { class: "k" }, String(n.n))));
+    });
+  }
+
+  function renderStats(node) {
+    const gap = node.model_acc - node.tri_acc;
+    const items = [
+      ["", node.n, "sessions"], ["", (i => i < 1 ? "<1" : i.toFixed(1))(node.minute), "median minute"],
+      ["m", pct(node.model_acc), "transformer top-1"], ["t", pct(node.tri_acc), "trigram top-1"],
+      ["", (gap >= 0 ? "+" : "−") + Math.abs(100 * gap).toFixed(0) + " pp", "difference"],
+      ["m", pct(node.model_p_true), "mean p(true)"],
+    ];
+    document.getElementById("stats").replaceChildren(...items.map(([cls, value, label]) =>
+      el("div", { class: "stat " + cls }, el("b", {}, String(value)), el("span", {}, label))));
+  }
+
+  function row(token, value, barColor, opts = {}) {
+    const attrs = { class: "row" + (opts.top ? " top" : "") + (opts.dim ? " dim" : ""), "data-token": token,
+      onmouseenter: () => highlight(token), onmouseleave: () => highlight(null) };
+    const kids = [
+      el("i", { class: "dot", style: "background:" + color(token) }),
+      el("span", { class: "name", title: name(token) }, name(token), opts.extra ? el("small", {}, opts.extra) : ""),
+      el("span", { class: "val" }, pct(value)),
+      el("span", { class: "bar" }, el("i", { style: `width:${Math.max(1, 100 * value)}%;background:${barColor}` })),
+    ];
+    if (opts.onclick) { attrs.type = "button"; attrs.onclick = opts.onclick; return el("button", attrs, ...kids); }
+    return el("div", attrs, ...kids);
+  }
+
+  function renderColumns(node) {
+    const mostCommon = node.actual.length ? node.actual[0][0] : null;
+    document.getElementById("c-actual").replaceChildren(...node.actual.map(([t, c]) => {
+      const child = index.childByToken.get(node.id + ":" + t);
+      return row(t, c / node.n, "var(--players)", { top: t === mostCommon, dim: !child,
+        extra: child ? "›" : "", onclick: child ? () => go(child.id) : null });
+    }));
+    document.getElementById("c-model").replaceChildren(...node.model.slice(0, 5).map(([t, p], i) =>
+      row(t, p, "var(--model)", { top: i === 0, extra: t === mostCommon ? "= players' #1" : "" })));
+    document.getElementById("c-tri").replaceChildren(...node.tri.map(([t, p], i) =>
+      row(t, p, "var(--trigram)", { top: i === 0, extra: t === mostCommon ? "= players' #1" : "" })));
+    document.getElementById("tri-level").textContent = node.tri_level === "trigram"
+      ? "Prediction from the last two actions only." : `Backed off to the ${node.tri_level} (context unseen in training).`;
+    highlight(state.hover);
+  }
+
+  function highlight(token) {
+    state.hover = token;
+    document.querySelectorAll(".row").forEach(r => r.classList.toggle("hl", token !== null && Number(r.dataset.token) === token));
+  }
+
+  const METRICS = {
+    model_err: { value: n => 1 - n.model_acc, scale: v => mix("--err-hi", "--err-lo", v), lo: "0%", hi: "100%",
+      grad: "linear-gradient(90deg,var(--err-lo),var(--err-hi))" },
+    tri_err: { value: n => 1 - n.tri_acc, scale: v => mix("--err-hi", "--err-lo", v), lo: "0%", hi: "100%",
+      grad: "linear-gradient(90deg,var(--err-lo),var(--err-hi))" },
+    gap: { value: n => n.model_acc - n.tri_acc,
+      scale: v => v >= 0 ? mix("--good", "--mid", Math.min(1, v / 0.5)) : mix("--bad", "--mid", Math.min(1, -v / 0.5)),
+      lo: "trigram +50 pp", hi: "transformer +50 pp", grad: "linear-gradient(90deg,var(--bad),var(--mid),var(--good))" },
+  };
+  function mix(hi, lo, v) { return `color-mix(in oklab, var(${hi}) ${Math.round(100 * v)}%, var(${lo}))`; }
+
+  function renderTree() {
+    const svg = document.getElementById("tree");
+    const metric = METRICS[state.metric];
+    const nodes = DATA.trees[state.view].nodes;
+    const depth = Math.max(...nodes.map(n => n.depth)) + 1;
+    const colW = 104, height = 380, width = depth * colW;
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    const onPath = new Set(pathTo(state.node).map(n => n.id));
+    const parts = [];
+    const place = (node, y, h) => {
+      parts.push({ node, x: node.depth * colW, y, h });
+      let cy = y;
+      for (const child of index.children.get(node.id)) {
+        const ch = h * child.n / node.n;
+        place(child, cy, ch);
+        cy += ch;
+      }
+    };
+    place(index.byId.get(0), 0, height);
+    svg.replaceChildren();
+    const ns = "http://www.w3.org/2000/svg";
+    for (const p of parts) {
+      const g = document.createElementNS(ns, "g");
+      const rect = document.createElementNS(ns, "rect");
+      rect.setAttribute("class", "n" + (onPath.has(p.node.id) ? " on" : ""));
+      rect.setAttribute("x", p.x + 1); rect.setAttribute("y", p.y);
+      rect.setAttribute("width", colW - 2); rect.setAttribute("height", Math.max(0.5, p.h));
+      rect.style.fill = metric.scale(metric.value(p.node));
+      rect.addEventListener("click", () => go(p.node.id));
+      const title = document.createElementNS(ns, "title");
+      title.textContent = `${p.node.depth ? name(p.node.token) : "Start"} · ${p.node.n} sessions · transformer ${pct(p.node.model_acc)} · trigram ${pct(p.node.tri_acc)}`;
+      rect.append(title);
+      g.append(rect);
+      if (p.h >= 14) {
+        const text = document.createElementNS(ns, "text");
+        text.setAttribute("x", p.x + 6); text.setAttribute("y", p.y + Math.min(p.h / 2, 14) + 4);
+        const label = p.node.depth ? name(p.node.token) : "Start";
+        text.textContent = label.length > 13 ? label.slice(0, 12) + "…" : label;
+        g.append(text);
+      }
+      svg.append(g);
+    }
+    document.getElementById("scale").replaceChildren(metric.lo, el("i", { style: "background:" + metric.grad }), metric.hi);
+  }
+
+  function render() {
+    const node = index.byId.get(state.node);
+    const tree = DATA.trees[state.view];
+    renderTrail(pathTo(state.node));
+    renderStats(node);
+    renderColumns(node);
+    renderTree();
+    document.getElementById("viewnote").textContent = state.view === "all"
+      ? "Includes training sessions: model and trigram accuracy are in-sample here." : "";
+    document.getElementById("minsess").textContent = DATA.meta.min_sessions;
+    document.getElementById("foot").replaceChildren(
+      `${tree.sessions} sessions (${tree.splits.join(", ")}), ${tree.nodes.length} prefixes with at least ${DATA.meta.min_sessions} sessions. `,
+      "Model: ", el("code", {}, DATA.meta.checkpoint),
+      ". A prefix is the sequence of distinct actions from the start of a session (repeats collapsed); the transformer also sees game minute and run lengths, so its bars are means over the sessions at this node. Built by ",
+      el("code", {}, "scripts/12_explorer_data.py"), ".");
+  }
+
+  document.getElementById("v-held").addEventListener("click", () => setView("held_out"));
+  document.getElementById("v-all").addEventListener("click", () => setView("all"));
+  document.getElementById("metric").addEventListener("change", e => { state.metric = e.target.value; renderTree(); });
+  render();
+})();
+</script>
+</body>
+</html>
