@@ -8,7 +8,7 @@ University group project (AI and Visualization, JKU Linz, group *Vieso*). A smal
 
 ## Current state
 
-The data pipeline is complete (branch `data-pipeline`): `scripts/00`–`08` build `data/processed/aoe2.db` and the training export, run with `.venv/bin/python scripts/run_all.py` (see README "Setup"). The model code (training, notebooks) does not exist yet. `requirements.txt` holds only `pyarrow`; the system Python (3.14) has no `torch`, and the project `.venv` only has `pyarrow`.
+The data pipeline is complete (branch `data-pipeline`): `scripts/00`–`08` build `data/processed/aoe2.db` and the training export, run with `.venv/bin/python scripts/run_all.py` (see README "Setup"). The model code exists (branch `model`): `scripts/aoe2_sequences.py` (filtering, collapsing, windows), `aoe2_model.py`, `aoe2_trigram.py`, `10_train.py`, `11_predict.py`, `12_explorer_data.py` and `explorer/`. Decisions and results are in `doc/model.md`. `requirements.txt` holds pyarrow, numpy, pandas and torch (CPU is enough).
 
 ## Data pipeline
 

@@ -55,6 +55,20 @@ To explain the patterns found in Phase I:
 - Probing of hidden states for the current age
 - Training checkpoints
 
+## Model, predictions and explorer (Phase I, AI-aided pair)
+
+Built on top of the training export; decisions, results and the column list of `predictions.parquet` are in
+[`doc/model.md`](doc/model.md), the AI interaction record in [`ai-interactions/`](ai-interactions/).
+
+```bash
+.venv/bin/python scripts/10_train.py          # transformer, checkpoints in models/transformer_v1/ (~12 min CPU)
+.venv/bin/python scripts/11_predict.py        # data/processed/predictions.parquet incl. plausibility join
+.venv/bin/python scripts/12_explorer_data.py  # explorer/data.js; then open explorer/index.html in a browser
+```
+
+First run (test split, repetitions collapsed): transformer top-1 41.9 % / top-5 78.9 %, trigram reference on the same
+target 36.7 % / 67.0 %. `models/` and `*.parquet` are not committed; share them via the team folder.
+
 ## Repository structure
 
 ```
