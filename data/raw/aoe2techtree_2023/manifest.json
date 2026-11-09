@@ -1,0 +1,19 @@
+{
+  "commit": "9d2f8987b2852695e997cc8ca4bee077108d1fbc",
+  "fetched_on": "2026-11-07",
+  "files": {
+    "data.json": {
+      "sha256": "2c578f37c73a424fbd0cd3337db57cb3825d974985218f342bf3902fa113c2c9",
+      "url": "https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/9d2f8987b2852695e997cc8ca4bee077108d1fbc/data/data.json"
+    },
+    "strings_en.json": {
+      "sha256": "31708d919c46b2a0848eab10a370ec924637d2220de20d6d0d3a9713d54aed63",
+      "url": "https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/9d2f8987b2852695e997cc8ca4bee077108d1fbc/data/locales/en/strings.json"
+    },
+    "techtree.js": {
+      "sha256": "849ac952d2e142aa263626090e72bdfc35e97d69bd7674cec0c4a1a2413d1daa",
+      "url": "https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/9d2f8987b2852695e997cc8ca4bee077108d1fbc/js/techtree.js"
+    }
+  },
+  "source": "github.com/SiegeEngineers/aoe2techtree"
+}

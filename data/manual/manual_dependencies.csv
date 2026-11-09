@@ -1,0 +1,16 @@
+object_type,object_name,requires_type,requires_name,req_group,req_count,weight,evidence
+TECHNOLOGY,Feudal Age,BUILDING,Barracks,dark_age_buildings,2,1,Game rule not in the tree files (general AoE2 DE knowledge; verify): Feudal Age needs 2 Dark Age buildings. Houses and walls do not count.
+TECHNOLOGY,Feudal Age,BUILDING,Mill,dark_age_buildings,2,1,See Barracks row.
+TECHNOLOGY,Feudal Age,BUILDING,Lumber Camp,dark_age_buildings,2,1,See Barracks row.
+TECHNOLOGY,Feudal Age,BUILDING,Mining Camp,dark_age_buildings,2,1,See Barracks row.
+TECHNOLOGY,Feudal Age,BUILDING,Dock,dark_age_buildings,2,1,See Barracks row.
+TECHNOLOGY,Feudal Age,BUILDING,Folwark,dark_age_buildings,2,1,Assumption: the Folwark replaces the Mill for Poles and counts like it.
+TECHNOLOGY,Castle Age,BUILDING,Archery Range,feudal_age_buildings,2,1,Game rule not in the tree files (general AoE2 DE knowledge; verify): Castle Age needs 2 Feudal Age buildings.
+TECHNOLOGY,Castle Age,BUILDING,Stable,feudal_age_buildings,2,1,See Archery Range row.
+TECHNOLOGY,Castle Age,BUILDING,Blacksmith,feudal_age_buildings,2,1,See Archery Range row.
+TECHNOLOGY,Castle Age,BUILDING,Market,feudal_age_buildings,2,1,See Archery Range row.
+TECHNOLOGY,Imperial Age,BUILDING,University,castle_age_buildings,2,1,"Game rule not in the tree files (general AoE2 DE knowledge; verify): Imperial Age needs 2 Castle Age buildings, or a Castle alone."
+TECHNOLOGY,Imperial Age,BUILDING,Monastery,castle_age_buildings,2,1,See University row.
+TECHNOLOGY,Imperial Age,BUILDING,Siege Workshop,castle_age_buildings,2,1,See University row.
+TECHNOLOGY,Imperial Age,BUILDING,Castle,castle_age_buildings,2,2,A Castle alone satisfies the rule (weight 2).
+TECHNOLOGY,Imperial Age,BUILDING,Fortified Church,castle_age_buildings,2,1,Assumption: the Fortified Church replaces the Monastery for Armenians and Georgians and counts like it.

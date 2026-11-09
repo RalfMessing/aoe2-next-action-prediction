@@ -1,0 +1,27 @@
+action,ocel_name,target_type,target_name,target_tree_id,evidence
+QUEUE,None,UNKNOWN,,,Placeholder name in the log: the unit is unknown.
+QUEUE,Camel Scout,UNIT,Camel Rider,,"Decided 2026-11-07. In the 2023 tree Camel Scout trains in 48 s and Camel Rider in 22 s; the log's duration is always 22 s. The log has no Queue Camel Rider type, and 237 sessions queue Camel Scout but only 30 start with one (exploration 8.0, 9.3). As a starting unit (CREATE_INITIAL) it stays Camel Scout."
+RESEARCH,,UNKNOWN,,,Placeholder: the event type has an empty suffix ('Start Research ').
+RESEARCH,None,UNKNOWN,,,Placeholder name in the log: the technology is unknown.
+RESEARCH,Scutage,TECHNOLOGY,Hauberk,,"Older name of the Sicilian tech 757: the 2023 js/techtree.js declares const SCUTAGE = 757, and the 2023 string table calls tech 757 Hauberk."
+RESEARCH,Heavy Cav Archer,TECHNOLOGY,Heavy Cavalry Archer,,Abbreviated name in the log for the upgrade from Cavalry Archer.
+BUILD,None,UNKNOWN,,,Placeholder name in the log: the building is unknown.
+BUILD,Town Center,BUILDING,Town Center,621,"Decided 2026-11-07. The buildable additional TC: Castle Age in the 2023 tree (Feudal for Cumans, see manual_civ_overrides.csv), build time 150 s, which equals the longest TC build in the log. Tree id 109 is the Dark Age TC lane (age 1), i.e. the TC a player starts with."
+CREATE_INITIAL,Gate up,BUILDING,Gate,,Gate variant that only appears as a starting object (orientation or open state).
+CREATE_INITIAL,Gate down,BUILDING,Gate,,Gate variant that only appears as a starting object (orientation or open state).
+CREATE_INITIAL,Palisade Gate up,BUILDING,Palisade Gate,,Gate variant that only appears as a starting object (orientation or open state).
+CREATE_INITIAL,Palisade Gate down,BUILDING,Palisade Gate,,Gate variant that only appears as a starting object (orientation or open state).
+CREATE_INITIAL,Goat,,,,Herdable animal on the map; not a player object.
+CREATE_INITIAL,Sheep,,,,Herdable animal on the map; not a player object.
+CREATE_INITIAL,Pig,,,,Herdable animal on the map; not a player object.
+CREATE_INITIAL,Llama,,,,Herdable animal on the map; not a player object. Both players have it in 59 matches (exploration 8.2).
+CREATE_INITIAL,Goose,,,,Herdable animal on the map; not a player object.
+CREATE_INITIAL,Turkey,,,,Herdable animal on the map; not a player object.
+CREATE_INITIAL,Water Buffalo,,,,Herdable animal on the map; not a player object.
+CREATE_INITIAL,Bactrian Camel,,,,Herdable animal on the map; not a player object. Not in either tree.
+CREATE_INITIAL,Horse A,,,,Not in either tree; only a starting object in a few matches. Meaning unknown.
+CREATE_INITIAL,Horse B,,,,Not in either tree; only a starting object in a few matches. Meaning unknown.
+CREATE_INITIAL,Horse C,,,,Not in either tree; only a starting object in a few matches. Meaning unknown.
+CREATE_INITIAL,Horse E,,,,Not in either tree; only a starting object in a few matches. Meaning unknown.
+CREATE_INITIAL,Sea Tower,,,,Not in the 2023 tree; only a starting object (scenario or map building).
+CREATE_INITIAL,Town Center,BUILDING,Town Center,109,The starting TC: tree id 109 is the TC in the Dark Age lane of the 2023 js/techtree.js (TOWN_CENTER = 109).

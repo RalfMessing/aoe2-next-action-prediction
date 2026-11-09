@@ -218,3 +218,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project data (raw downloads and generated artifacts are not committed)
+data/raw/*
+!data/raw/raw data is stored here
+!data/raw/data.json
+!data/raw/aoe2techtree/
+!data/raw/aoe2techtree_2023/
+data/processed/*
+!data/processed/processed data is stored here
+*.sqlite
+*.db
+*.parquet
