@@ -1,7 +1,7 @@
 # Next-action model: decisions and how to run it
 
-Phase I, AI-aided pair (Fabian Kloibhofer with Claude as assistant). This file records *what* we built and *why*,
-including the alternatives we rejected. The interaction record (who suggested what) is in `ai-interactions/`.
+Phase I, AI-aided pair (Fabian Kloibhofer). This file records *what* was built and *why*,
+including the rejected alternatives. The AI interaction record is in `ai-interactions/`.
 
 ## Run it
 
@@ -118,8 +118,8 @@ of the whole tree coloured by error rate (or by the transformer-trigram gap).
 
 ## Results of the first run (`transformer_v1`)
 
-Training (Fabian's laptop, CPU): 29 epochs in 12 min, early stop; best validation loss 2.124 at epoch 24
-(step 888). The probe run in Claude's sandbox gave identical numbers for every epoch, so the run is reproducible
+Training (laptop CPU): 29 epochs in 12 min, early stop; best validation loss 2.124 at epoch 24
+(step 888). A second, independent run gave identical numbers for every epoch, so the run is reproducible
 with seed 42.
 
 Checkpoints in `models/transformer_v1/` (for Phase II): `step_0000000.pt` (untrained) and log-spaced `step_0000016.pt` … `step_0001024.pt`, `epoch_001.pt` … `epoch_029.pt`, `best.pt` (= epoch 24, step 888), plus `config.json` and `metrics.csv`. Each checkpoint stores model and training configuration and the SHA-256 of `vocab.csv`; `11_predict.py` refuses a checkpoint whose vocabulary does not match.

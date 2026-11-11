@@ -8,53 +8,55 @@ Human-Only pair of phase 1
 - M Shahab Uddin k12353348
 - Abdurahman Alsabagh k12407903
 
-## Part: model, predictions and explorer (Fabian, with Claude)
+## Part: model, predictions and explorer (Fabian)
 
-Detailed record: `ai-interactions/2026-11-08_phase1_setup-and-model.md`. Decisions and results: `doc/model.md`.
-The data pipeline (Ralf) was also built with AI assistance; its prompts and answers are in `doc/prompt_phase_*.md`
-and `doc/answer_after_phase_*.md`.
+Record: `ai-interactions/2026-11-08_phase1_setup-and-model.md`. Decisions and results: `doc/model.md`.
 
-**How we used AI.** Claude (Cowork) worked as a collaborator with access to the repo on Fabian's laptop: it read the
-assignment documents and the data, proposed and justified decisions, wrote the model, prediction and explorer code,
-ran smoke tests and a probe training in its own sandbox and kept this record. Fabian set the goals, ran the official
-pipeline, training and predictions on his machine, made the final calls and commits.
+### Setup
 
-**What it changed.**
-- *Speed and breadth.* In one afternoon: data analysis for the collapse decision, model + training, predictions with
-  plausibility join, an own trigram reference on the same target, an interactive explorer with a prefix tree, and
-  a first breakdown of the results. Without AI we would have had the model and the predictions file, not the
-  explorer and the analyses on top.
-- *Quality through questioning.* Asking the AI to justify each decision (with rejected alternatives) surfaced
-  points we would not have checked: the trigram file on `main` predicts action *types*, not tokens; 19 spam
-  sessions hold 10 % of all decisions; feeding the age would make the Phase II probe useless.
-- *Verification cost.* Every number was recomputed from files (Fabian's `best.pt`, his `predictions.parquet`);
-  running Fabian's training and the AI's probe run side by side confirmed reproducibility. This took maybe a
-  quarter of the time but is what makes us confident in the results.
+One AI with access to the repo folder on my laptop and its own sandbox: Claude (Cowork) implemented the code,
+analysed data and results, ran smoke tests and a probe training and drafted the documentation. I defined the tasks
+and constraints, ran the pipeline, the official training and the predictions on my machine, reviewed every result,
+made the decisions and committed. Result: the trained transformer with checkpoints, `predictions.parquet` with the
+plausibility join, a trigram reference on the same target and the build-order explorer.
 
-**Failure patterns observed.**
-- Commands for the wrong environment (recommended Python 3.12 without checking; only 3.14 was installed).
-- Confident but wrong expectations (expected a much deeper prefix tree than the data allows).
-- Tool friction: two git clients on one checkout, permission issues in synced folders.
-- The AI widens the option space quickly (four explorer extensions); deciding what is worth the time stays with us.
+### Where the AI helped
 
-**Emerging best practices.**
-- Verify every AI statement about the data with an own query; summaries are not evidence.
-- Let the AI read the actual assignment documents instead of answering from general knowledge.
-- Smoke tests with explicit invariants before long runs (e.g. every target scored exactly once).
-- Write each decision down with the rejected alternatives.
-- Break single scores down (minute, age, action type, confidence) and compare rates with their baseline noise.
-- Label every view by its data basis (held-out vs. in-sample).
-- The human runs the official training and commits; the AI drafts, checks and documents.
+- **Speed and breadth.** Model, predictions, trigram reference, explorer and a first analysis in one working day.
+  Without AI I would have delivered the model and the predictions file, not the explorer and the analyses on top.
+- **Justified decisions.** I had every decision checked against the data before adopting it. That turned "collapsing
+  is probably right" into numbers (61 % repeats, 60.5 % top-1 for "repeat last action") and surfaced 19 spam sessions
+  holding 10 % of all decisions.
+- **Thinking ahead to Phase II.** Age not as an input, attention and hidden states exposed, log-spaced early
+  checkpoints: the model is built for the analyses we plan next.
+- **Checking the shared state.** Opening the committed trigram file showed that it predicts action types, not
+  tokens, which the summary did not reveal.
 
-**Confidence in our conclusions.** High for the headline numbers (reproduced, computed on held-out data, compared
-with a baseline on the same target). Moderate for the interpretations (opening advantage, age-up anticipation):
-they are plausible and supported by single nodes and breakdowns, but still need the targeted Phase I views.
+### Where it went wrong
 
-*To be completed together with the human-only pair after comparing both processes.*
+- **Wrong environment.** Install commands for Python 3.12 without checking the installed version (3.14).
+- **Confident expectations.** It expected a much deeper prefix tree than the data allows.
+- **Tool friction.** Permission issues in a synced folder, two git clients on one checkout.
+- **Option creep.** It kept proposing extensions. I stopped after my assigned tasks and handed the ideas to the team.
+
+### What I would do again
+
+- Let the AI read the real files and assignment documents, not summaries.
+- Require a check with an explicit invariant before every long run.
+- Have the AI justify each decision with the rejected alternatives, and decide myself.
+- Recompute every reported number from the actual output files on my machine.
+- Compare rates with their baseline noise and label every view by its data basis (held-out vs. in-sample).
+
+### How sure I am
+
+Sure about the headline numbers: reproduced in two independent runs, computed on held-out data, compared with a
+baseline on the same target. Less sure about the interpretations (advantage in the opening, anticipation of
+age-ups): they are supported by breakdowns and single nodes, but still need the targeted Phase I views. Part of the
+implausible predictions are checker false alarms caused by missing age-up commands in the log.
 
 ## Part: data pipeline (Ralf)
 
-Record: `ai-interactions/2026-11-07_phase1_data-pipeline.md`. Agent prompts and answers: `doc/prompt_phase_*.md`,
+Record: `ai-interactions/phase1_data_pipeline.md`. Agent prompts and answers: `doc/prompt_phase_*.md`,
 `doc/answer_after_phase_*.md`.
 
 ### Setup
