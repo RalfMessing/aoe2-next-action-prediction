@@ -51,3 +51,48 @@ with a baseline on the same target). Moderate for the interpretations (opening a
 they are plausible and supported by single nodes and breakdowns, but still need the targeted Phase I views.
 
 *To be completed together with the human-only pair after comparing both processes.*
+
+## Part: data pipeline (Ralf)
+
+Record: `ai-interactions/2026-11-07_phase1_data-pipeline.md`. Agent prompts and answers: `doc/prompt_phase_*.md`,
+`doc/answer_after_phase_*.md`.
+
+### Setup
+
+Two AIs with fixed roles. A coding agent in PyCharm implemented and ran the scripts phase by phase. Claude
+(claude.ai) reviewed the agent's reports and helped draft the next phase. I set the requirements, chose the data
+sources, ran everything, made the decisions and committed. Result: the shared database and training export both
+pairs work with.
+
+### Where the AI helped
+
+- **Structure.** From a schema draft and two raw sources to a pipeline with clear phases and stop points. Without
+  AI the pipeline would have been a plain export of the commands.
+- **Finding problems in the data.** Simulated timestamps, missing age-up commands, replacement buildings logged
+  under base names. Most of these would have stayed hidden without the systematic phase reports.
+- **Plausibility check.** The idea came from the team; the AI made it testable: a check is only useful if it flags
+  almost no real actions and most random ones. The model predictions now use it.
+
+### Where it went wrong
+
+- **Invented project facts.** The AI justified a decision with a preprocessing script that did not exist.
+- **Untested output.** A UML diagram with a syntax error, presented as finished.
+- **Wrong column in code.** Generic instead of per-civ age for Town Centers; only the report review showed it.
+- **Scope creep.** Every review round proposed further refinements. After phase 4 I had the remaining work
+  re-evaluated against the project goal: the training data had been complete since phase 3. I stopped the database
+  work there.
+
+### What I would do again
+
+- Give the AI the real files and reports, not summaries.
+- Let the agent stop after every phase with a report containing numbers that can be checked.
+- Check results with domain knowledge, not only with metrics.
+- Ask regularly what a step contributes to the goal. The AI does not stop on its own.
+- Correct wrong statements about our own project immediately.
+
+### How sure I am
+
+Sure about structure and counts: every phase was validated, and a rebuild on a second machine gave identical
+numbers. Less sure about derived fields. Civ inference identifies only 29 % of sessions, and that subset is skewed,
+so analyses by civ only hold for it. Some actions the plausibility check flags as impossible are false alarms caused
+by missing age-up commands in the log.
